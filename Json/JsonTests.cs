@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using cs_Tests.Models;
+using CsTests.Json.Models;
 using System.Runtime.Serialization.Json;
 using System.IO;
 
-namespace cs_Tests
+namespace CsTests.Json
 {
     [TestClass]
     public class JsonTests
@@ -19,7 +19,7 @@ namespace cs_Tests
             ser.WriteObject(stream, model);
             stream.Position = 0;
             var reader = new StreamReader(stream);
-            Console.WriteLine(reader.ReadToEnd());
+            Console.WriteLine("Json format: " + reader.ReadToEnd());
         }
     }
 }

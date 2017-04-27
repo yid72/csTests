@@ -9,7 +9,7 @@ namespace cs_Tests.Misc
     public class UrlTest
     {
         private const string TesterEmail = "tester@microsoft.com";
-        private const string HelloWorld = "hello world";
+        private const string HelloWorld = "hello world+/%";
         private const string HelloWorld1 = "hello+world";
         private string testBaseUrl = "http://www.foo.com/foo.aspx";
 
@@ -24,9 +24,10 @@ namespace cs_Tests.Misc
         [TestMethod]
         public void TestEscapeDataString()
         {
-            Console.WriteLine(HttpUtility.UrlEncode(HelloWorld));
-            Console.WriteLine(Uri.EscapeUriString(HelloWorld));
-            Console.WriteLine(Uri.EscapeDataString(HelloWorld));
+            Console.WriteLine("HttpUtility.UrlEncode(): " + HttpUtility.UrlEncode(HelloWorld));
+            Console.WriteLine("HttpUtility.HtmlEncode(): " + HttpUtility.HtmlEncode(HelloWorld));
+            Console.WriteLine("Uri.EscapeUriString(): " + Uri.EscapeUriString(HelloWorld));
+            Console.WriteLine("Uri.EscapeDataString(): " + Uri.EscapeDataString(HelloWorld));
         }
 
         [TestMethod]
@@ -43,9 +44,17 @@ namespace cs_Tests.Misc
             NameValueCollection p = HttpUtility.ParseQueryString(String.Empty);
             p["email"] = TesterEmail;
             p["value"] = HelloWorld;
+            p["value1"] = HttpUtility.UrlEncode(HelloWorld);
 
-            Assert.AreEqual("email=tester%40microsoft.com&value=hello+world", p.ToString());
-        }
+            Console.WriteLine("p = " + p.ToString());
+
+            var builder = new UriBuilder();
+            builder.Query = p.ToString();
+            Console.WriteLine(builder.ToString());
+
+            builder.Query = "value=" + Uri.EscapeDataString("hello world");
+            Console.WriteLine(builder.ToString());
+        }   
 
         [TestMethod]
         public void TestBuildQuery1()

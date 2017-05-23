@@ -25,9 +25,21 @@ namespace cs_Tests.Moq
             return this.students[name];
         }
 
+        public async Task<Student> GetStudentAsync(string name)
+        {
+            await Task.Delay(1000);
+            return GetStudent(name);
+        }
+
         public void AddStudent(Student student)
         {
             this.students[student.Name] = student;
+        }
+
+        public async Task AddStudentAsync(Student student)
+        {
+            await Task.Delay(1000);
+            AddStudent(student);
         }
     }
 }

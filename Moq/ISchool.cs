@@ -11,5 +11,11 @@ namespace cs_Tests.Moq
         int GetStudentCount();
 
         Student GetStudent(string name);
+
+        Task<Student> GetStudentAsync(string name);
+
+        void AddStudent(Student student);
+
+        Task AddStudentAsync(Student student);
     }
 }

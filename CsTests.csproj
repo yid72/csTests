@@ -67,8 +67,9 @@
     <Compile Include="Json\Models\HelloWorldModel.cs" />
     <Compile Include="Mail\Mail.cs" />
     <Compile Include="Misc\GuidTest.cs" />
-    <Compile Include="Misc\HttpUtilityTest.cs" />
-    <Compile Include="Misc\UrlTest.cs" />
+    <Compile Include="Web\HttpUtilityTest.cs" />
+    <Compile Include="Moq\IStudent.cs" />
+    <Compile Include="Web\UriTests.cs" />
     <Compile Include="Moq\ISchool.cs" />
     <Compile Include="Moq\MoqTest.cs" />
     <Compile Include="Moq\School.cs" />

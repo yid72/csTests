@@ -3,18 +3,29 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Web;
 using System.Collections.Specialized;
 
-namespace cs_Tests.Misc
+namespace csTests.Web
 {
     [TestClass]
-    public class UrlTest
+    public class UriTest
     {
         private const string TesterEmail = "tester@microsoft.com";
         private const string HelloWorld = "hello world+/%";
         private const string HelloWorld1 = "hello+world";
-        private string testBaseUrl = "http://www.foo.com/foo.aspx";
+        private const string TextWithSpace = "hello ";
+        private string testBaseUrl = "http://www.foo.com/path/foo.aspx";
+        private string SpecialUrl = "http://www.foo.com/path/hello world%#.docx?a=b";
+        private string EscapedUriSpecialUrl = "http://www.foo.com/path/hello%20world%25#.docx?a=b";
+        private string EscapedDataSpecialUrl = "http%3A%2F%2Fwww.foo.com%2Fpath%2Fhello%20world%25%23.docx%3Fa%3Db";
+        private Uri myUri;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            this.myUri = new Uri(this.testBaseUrl);   
+        }
 
         [TestMethod]
-        public void TestUrlBuilder()
+        public void TestUriBuilder()
         {
             var uriBuilder = new UriBuilder(this.testBaseUrl);
             Console.WriteLine(uriBuilder.ToString());
@@ -22,12 +33,21 @@ namespace cs_Tests.Misc
         }
 
         [TestMethod]
+        public void TestEscapeUriString()
+        {
+            // RFC2396 reserved characters ";/?:@&=+$," are not encoded.
+            Assert.AreEqual(EscapedUriSpecialUrl, Uri.EscapeUriString(SpecialUrl));
+
+            Assert.AreEqual("hello%20", Uri.EscapeUriString(TextWithSpace));
+        }
+
+        [TestMethod]
         public void TestEscapeDataString()
         {
-            Console.WriteLine("HttpUtility.UrlEncode(): " + HttpUtility.UrlEncode(HelloWorld));
-            Console.WriteLine("HttpUtility.HtmlEncode(): " + HttpUtility.HtmlEncode(HelloWorld));
-            Console.WriteLine("Uri.EscapeUriString(): " + Uri.EscapeUriString(HelloWorld));
-            Console.WriteLine("Uri.EscapeDataString(): " + Uri.EscapeDataString(HelloWorld));
+            Assert.AreEqual(EscapedDataSpecialUrl, Uri.EscapeDataString(SpecialUrl));
+
+            // NOTE: EscapeDataString() doesn't convert a space to '+'!
+            Assert.AreEqual("hello%20", Uri.EscapeDataString(TextWithSpace));
         }
 
         [TestMethod]
@@ -101,11 +121,30 @@ namespace cs_Tests.Misc
             Console.WriteLine("key: " + p1["key"]);
         }
 
-        public void TestQueryParametersBad()
+        [TestMethod]
+        public void TestUriQueryParametersBad()
         {
             NameValueCollection p2 = HttpUtility.ParseQueryString("email=admin@prepspo.msolctp-int.com&key=hello+world");
             Console.WriteLine("email: " + p2["email"]);
             Console.WriteLine("key: " + p2["key"]);
+        }
+
+        [TestMethod]
+        public void TestUriGetComponents()
+        {
+            string str = this.myUri.GetComponents(UriComponents.SchemeAndServer, UriFormat.SafeUnescaped);
+            Assert.AreEqual("http://www.foo.com", str);
+        }
+
+        [TestMethod]
+        public void TestUriSegments()
+        {
+            string[] segs = this.myUri.Segments;
+            Assert.IsNotNull(segs);
+            Assert.AreEqual(3, segs.Length);
+            Assert.AreEqual("/", segs[0]);
+            Assert.AreEqual("path/", segs[1]);
+            Assert.AreEqual("foo.aspx", segs[2]);
         }
     }
 }

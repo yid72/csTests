@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace cs_Tests.Moq
 {
-    public class Student
+    public class Student : IStudent
     {
         private string name;
 

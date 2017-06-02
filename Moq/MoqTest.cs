@@ -12,7 +12,7 @@ namespace cs_Tests.Moq
     public class MoqTest
     {
         [TestMethod]
-        public async Task TestMock()
+        public async Task TestMockSchool()
         {
             Student student = new Student("Mike");
             var mockCount = 1;
@@ -28,6 +28,26 @@ namespace cs_Tests.Moq
             Assert.AreEqual(student.Name, mock.Object.GetStudent("any name").Name);
             Assert.AreEqual(student.Name, mock.Object.GetStudentAsync("name").Result.Name);
             await mock.Object.AddStudentAsync(student);
+        }
+
+        [TestMethod]
+        public void TestMockStudentName()
+        {
+            var mock= new Mock<IStudent>();
+            mock.Setup(s => s.Name).Returns("name");
+            Assert.AreEqual("name", mock.Object.Name);
+        }
+
+        [TestMethod]
+        public void TestMockStudentCallback()
+        {
+            string result = string.Empty;
+
+            var mock = new Mock<IStudent>();
+            mock.Setup(s => s.Name).Callback(() => { result = "hello"; }).Returns("name");
+            string name = mock.Object.Name;
+            Assert.AreEqual("name", name);
+            Assert.AreEqual("hello", result);
         }
     }
 }
